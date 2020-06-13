@@ -1,0 +1,3 @@
+adafruit-circuitpython-max7219
+adafruit-circuitpython-framebuf
+adafruit-blinka
