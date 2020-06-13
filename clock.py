@@ -15,14 +15,14 @@ display = Matrix8xN.Matrix8xN(spi, cs, width=32, height=8)
 display.clear_all()
 display.brightness(1)
 
-# framebuffer top left is 0,0
+# framebuffer top left is 0,0!
 
 while True:
     display.clear_all()
-    display.text(strg="Howdy!", xpos=0, ypos=0, bit_value=1)
+    display.framebuf.text(strg="Howdy!", xpos=0, ypos=0, bit_value=1)
     display.show()
     time.sleep(1)
     display.clear_all()
-    display.text(strg="Y'all", xpos=0, ypos=0, bit_value=1)
+    display.framebuf.text(strg="Y'all", xpos=0, ypos=0, bit_value=1)
     display.show()
     time.sleep(1)
