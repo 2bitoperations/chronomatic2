@@ -1,5 +1,5 @@
 from micropython import const
-from adafruit_max7219 import max7219
+import max7219
 
 __version__ = "0.0.0-auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_MAX7219.git"
@@ -28,7 +28,7 @@ class Matrix8xN(max7219.MAX7219):
                 (_DECODEMODE, 0),
                 (_SHUTDOWN, 1),
         ):
-            self.write_cmd(cmd, data)
+            self.write_cmd_to_all(cmd, data)
 
         self.fill(0)
         self.show()
