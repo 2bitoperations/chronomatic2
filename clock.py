@@ -10,16 +10,19 @@ import Matrix8xN
 cs = digitalio.DigitalInOut(board.CE0)
 
 spi = busio.SPI(board.SCLK, MOSI=board.MOSI, MISO=board.MISO)
-display = Matrix8xN.Matrix8xN(spi, cs, width=8, height=32)
+display = Matrix8xN.Matrix8xN(spi, cs, width=32, height=8)
 
 display.clear_all()
-display.brightness(3)
+display.brightness(1)
+
+# framebuffer top left is 0,0
 
 while True:
-
-    for i in range(0, 7):
-        display.pixel(i, i, bit_value=1)
-        display.pixel(i+8, 7-i, bit_value=1)
+    display.clear_all()
+    display.text(strg="Howdy!", xpos=0, ypos=0, bit_value=1)
     display.show()
-
-    time.sleep(1.0)
+    time.sleep(1)
+    display.clear_all()
+    display.text(strg="Y'all", xpos=0, ypos=0, bit_value=1)
+    display.show()
+    time.sleep(1)

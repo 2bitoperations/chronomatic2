@@ -116,8 +116,25 @@ class MAX7219:
         """
         Updates the display.
         """
-        for ypos in range(self.width):
-            self.write_cmd(_DIGIT0 + ypos, self._buffer[ypos])
+        # we must go digit by digit, starting with the last display in the chain and working backwards
+        for ypos in range(self.height):
+            cmds = []
+            for module in range(self.width // 8):
+                # each digit is a single y-pos on the physical display, digit 0 is "bottom"
+                # framebuffer y = 0 is top row
+                # row_idx will be the index of the pixel for this module in this row, going from left to right
+                module_row_value = 0
+                for row_idx in range(8):
+                    pixel_xpos = (8 * module) + row_idx
+                    pixel_ypos = self.height - ypos - 1
+                    pixel_value = self.framebuf.pixel(x=pixel_xpos, y=pixel_ypos, color=None)
+                    # print("pixel value at {xpos} x {ypos} is {value}".format(xpos=pixel_xpos, ypos=pixel_ypos, value=pixel_value))
+                    module_row_value = module_row_value | (pixel_value << row_idx)
+
+                cmds.insert(0, module_row_value)
+                cmds.insert(0, _DIGIT0 + ypos)
+            # print("for y pos {ypos} sending commands {cmds}".format(ypos=ypos, cmds=cmds))
+            self.write_data(data=cmds)
 
     def fill(self, bit_value):
         """
@@ -144,12 +161,16 @@ class MAX7219:
 
     def write_cmd(self, cmd, data):
         # pylint: disable=no-member
-        """Writes a command to spi device."""
-        # print('cmd {} data {}'.format(cmd,data))
+        self.write_data(data=[cmd, data])
+
+    def write_data(self, data):
         self._chip_select.value = False
         with self._spi_device as my_spi_device:
-            my_spi_device.write(bytearray([cmd, data]))
+            my_spi_device.write(bytearray(data))
+        self._chip_select.value = True
 
     def write_cmd_to_all(self, cmd, data):
-        for module in range(0, self.width // 8):
-            self.write_cmd(cmd=cmd, data=data)
+        cmds = []
+        for module in range(self.width // 8):
+            cmds.extend([cmd, data])
+        self.write_data(data=cmds)

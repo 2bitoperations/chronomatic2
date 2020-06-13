@@ -8,6 +8,7 @@ _DECODEMODE = const(9)
 _SCANLIMIT = const(11)
 _SHUTDOWN = const(12)
 _DISPLAYTEST = const(15)
+_INTENSITY = const(10)
 
 
 class Matrix8xN(max7219.MAX7219):
@@ -32,6 +33,11 @@ class Matrix8xN(max7219.MAX7219):
 
         self.fill(0)
         self.show()
+
+    def brightness(self, value):
+        if not 0 <= value <= 15:
+            raise ValueError("Brightness out of range")
+        self.write_cmd_to_all(_INTENSITY, value)
 
     def text(self, strg, xpos, ypos, bit_value=1):
         """
