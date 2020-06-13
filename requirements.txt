@@ -1,3 +1,7 @@
 adafruit-circuitpython-max7219
 adafruit-circuitpython-framebuf
 adafruit-blinka
+adafruit-blinka-displayio
+adafruit-circuitpython-bitmap-font
+adafruit-circuitpython-display-text
+requests
